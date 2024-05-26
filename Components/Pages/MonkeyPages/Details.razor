@@ -1,0 +1,57 @@
+﻿@page "/monkeys/details"
+@inject BlazorApp.Data.BlazorAppContext DB
+@using BlazorApp.Model
+@inject NavigationManager NavigationManager
+@using Microsoft.EntityFrameworkCore
+
+<PageTitle>Details</PageTitle>
+
+<h1>Details</h1>
+
+<div>
+    <h4>Monkey</h4>
+    <hr />
+    @if (monkey is null)
+    {
+        <p><em>Loading...</em></p>
+    }
+    else {
+        <dl class="row">
+            <dt class="col-sm-2">Name</dt>
+            <dd class="col-sm-10">@monkey.Name</dd>
+            <dt class="col-sm-2">Location</dt>
+            <dd class="col-sm-10">@monkey.Location</dd>
+            <dt class="col-sm-2">Details</dt>
+            <dd class="col-sm-10">@monkey.Details</dd>
+            <dt class="col-sm-2">Image</dt>
+            <dd class="col-sm-10">@monkey.Image</dd>
+            <dt class="col-sm-2">Population</dt>
+            <dd class="col-sm-10">@monkey.Population</dd>
+            <dt class="col-sm-2">Latitutie</dt>
+            <dd class="col-sm-10">@monkey.Latitutie</dd>
+            <dt class="col-sm-2">Longitutie</dt>
+            <dd class="col-sm-10">@monkey.Longitutie</dd>
+        </dl>
+        <div>
+            <a href="@($"/monkeys/edit?id={monkey.Id}")">Edit</a> |
+            <a href="@($"/monkeys")">Back to List</a>
+        </div>
+    }
+</div>
+
+@code {
+    Monkey? monkey;
+
+    [SupplyParameterFromQuery]
+    public int Id { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        monkey = await DB.Monkey.FirstOrDefaultAsync(m => m.Id == Id);
+
+        if (monkey is null)
+        {
+            NavigationManager.NavigateTo("notfound");
+        }
+    }
+}

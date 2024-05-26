@@ -1,0 +1,28 @@
+﻿@page "/monkeys"
+@using Microsoft.AspNetCore.Components.QuickGrid
+@inject BlazorApp.Data.BlazorAppContext DB
+@using BlazorApp.Model
+
+<PageTitle>Index</PageTitle>
+
+<h1>Index</h1>
+
+<p>
+    <a href="monkeys/create">Create New</a>
+</p>
+
+<QuickGrid Class="table" Items="DB.Monkey">
+    <PropertyColumn Property="monkey => monkey.Name" />
+    <PropertyColumn Property="monkey => monkey.Location" />
+    <PropertyColumn Property="monkey => monkey.Details" />
+    <PropertyColumn Property="monkey => monkey.Image" />
+    <PropertyColumn Property="monkey => monkey.Population" />
+    <PropertyColumn Property="monkey => monkey.Latitutie" />
+    <PropertyColumn Property="monkey => monkey.Longitutie" />
+
+    <TemplateColumn Context="monkey">
+        <a href="@($"monkeys/edit?id={monkey.Id}")">Edit</a> |
+        <a href="@($"monkeys/details?id={monkey.Id}")">Details</a> |
+        <a href="@($"monkeys/delete?id={monkey.Id}")">Delete</a>
+    </TemplateColumn>
+</QuickGrid>

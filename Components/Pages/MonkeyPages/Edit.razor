@@ -1,0 +1,116 @@
+﻿@page "/Monkeys/edit"
+@inject BlazorApp.Data.BlazorAppContext DB
+@using BlazorApp.Model
+@inject NavigationManager NavigationManager
+@using Microsoft.EntityFrameworkCore
+
+<PageTitle>Edit</PageTitle>
+
+<h1>Edit</h1>
+
+<h4>Monkey</h4>
+<hr />
+@if (Monkey is null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <div class="row">
+        <div class="col-md-4">
+            <EditForm method="post" Model="Monkey" OnValidSubmit="UpdateMonkey" FormName="edit" Enhance>
+                <DataAnnotationsValidator />
+                <ValidationSummary />
+                <input type="hidden" name="Monkey.Id" value="@Monkey.Id" />
+                <div class="mb-3">
+                    <label for="name" class="form-label">Name:</label>
+                    <InputText id="name" @bind-Value="Monkey.Name" class="form-control" />
+                    <ValidationMessage For="() => Monkey.Name" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="location" class="form-label">Location:</label>
+                    <InputText id="location" @bind-Value="Monkey.Location" class="form-control" />
+                    <ValidationMessage For="() => Monkey.Location" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="details" class="form-label">Details:</label>
+                    <InputText id="details" @bind-Value="Monkey.Details" class="form-control" />
+                    <ValidationMessage For="() => Monkey.Details" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="image" class="form-label">Image:</label>
+                    <InputText id="image" @bind-Value="Monkey.Image" class="form-control" />
+                    <ValidationMessage For="() => Monkey.Image" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="population" class="form-label">Population:</label>
+                    <InputNumber id="population" @bind-Value="Monkey.Population" class="form-control" />
+                    <ValidationMessage For="() => Monkey.Population" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="latitutie" class="form-label">Latitutie:</label>
+                    <InputNumber id="latitutie" @bind-Value="Monkey.Latitutie" class="form-control" />
+                    <ValidationMessage For="() => Monkey.Latitutie" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="longitutie" class="form-label">Longitutie:</label>
+                    <InputNumber id="longitutie" @bind-Value="Monkey.Longitutie" class="form-control" />
+                    <ValidationMessage For="() => Monkey.Longitutie" class="text-danger" />
+                </div>
+                <button type="submit" class="btn btn-primary">Save</button>
+            </EditForm>
+        </div>
+    </div>
+}
+
+<div>
+    <a href="/monkeys">Back to List</a>
+</div>
+
+@code {
+    [SupplyParameterFromQuery]
+    public int Id { get; set; }
+
+    [SupplyParameterFromForm]
+    public Monkey? Monkey { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        Monkey ??= await DB.Monkey.FirstOrDefaultAsync(m => m.Id == Id);
+
+        if (Monkey is null)
+        {
+            NavigationManager.NavigateTo("notfound");
+        }
+    }
+
+    // To protect from overposting attacks, enable the specific properties you want to bind to.
+    // For more details, see https://aka.ms/RazorPagesCRUD.
+    public async Task UpdateMonkey()
+    {
+        DB.Attach(Monkey!).State = EntityState.Modified;
+
+        try
+        {
+            await DB.SaveChangesAsync();
+        }
+        catch (DbUpdateConcurrencyException)
+        {
+            if (!MonkeyExists(Monkey!.Id))
+            {
+                NavigationManager.NavigateTo("notfound");
+            }
+            else
+            {
+                throw;
+            }
+        }
+
+        NavigationManager.NavigateTo("/monkeys");
+    }
+
+    bool MonkeyExists(int id)
+    {
+        return DB.Monkey.Any(e => e.Id == id);
+    }
+}

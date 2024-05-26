@@ -1,0 +1,73 @@
+﻿@page "/monkeys/create"
+@inject BlazorApp.Data.BlazorAppContext DB
+@using BlazorApp.Model
+@inject NavigationManager NavigationManager
+
+<PageTitle>Create</PageTitle>
+
+<h1>Create</h1>
+
+<h4>Monkey</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <EditForm method="post" Model="Monkey" OnValidSubmit="AddMonkey" FormName="create" Enhance>
+            <DataAnnotationsValidator />
+            <ValidationSummary class="text-danger" />
+            <div class="mb-3">
+                <label for="name" class="form-label">Name:</label> 
+                <InputText id="name" @bind-Value="Monkey.Name" class="form-control" /> 
+                <ValidationMessage For="() => Monkey.Name" class="text-danger" /> 
+            </div>        
+            <div class="mb-3">
+                <label for="location" class="form-label">Location:</label> 
+                <InputText id="location" @bind-Value="Monkey.Location" class="form-control" /> 
+                <ValidationMessage For="() => Monkey.Location" class="text-danger" /> 
+            </div>        
+            <div class="mb-3">
+                <label for="details" class="form-label">Details:</label> 
+                <InputText id="details" @bind-Value="Monkey.Details" class="form-control" /> 
+                <ValidationMessage For="() => Monkey.Details" class="text-danger" /> 
+            </div>        
+            <div class="mb-3">
+                <label for="image" class="form-label">Image:</label> 
+                <InputText id="image" @bind-Value="Monkey.Image" class="form-control" /> 
+                <ValidationMessage For="() => Monkey.Image" class="text-danger" /> 
+            </div>        
+            <div class="mb-3">
+                <label for="population" class="form-label">Population:</label> 
+                <InputNumber id="population" @bind-Value="Monkey.Population" class="form-control" /> 
+                <ValidationMessage For="() => Monkey.Population" class="text-danger" /> 
+            </div>        
+            <div class="mb-3">
+                <label for="latitutie" class="form-label">Latitutie:</label> 
+                <InputNumber id="latitutie" @bind-Value="Monkey.Latitutie" class="form-control" /> 
+                <ValidationMessage For="() => Monkey.Latitutie" class="text-danger" /> 
+            </div>        
+            <div class="mb-3">
+                <label for="longitutie" class="form-label">Longitutie:</label> 
+                <InputNumber id="longitutie" @bind-Value="Monkey.Longitutie" class="form-control" /> 
+                <ValidationMessage For="() => Monkey.Longitutie" class="text-danger" /> 
+            </div>        
+            <button type="submit" class="btn btn-primary">Create</button>
+        </EditForm>
+    </div>
+</div>
+
+<div>
+    <a href="/monkeys">Back to List</a>
+</div>
+
+@code {
+
+    [SupplyParameterFromForm]
+    public Monkey Monkey { get; set; } = new();
+
+    // To protect from overposting attacks, see https://aka.ms/RazorPagesCRUD
+    public async Task AddMonkey()
+    {
+        DB.Monkey.Add(Monkey);
+        await DB.SaveChangesAsync();
+        NavigationManager.NavigateTo("/monkeys");
+    }
+}
